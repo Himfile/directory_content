@@ -24,3 +24,10 @@ C:\Users\USER-PC\GitRepose\Projects\directory_content\obj\Debug\ConsoleStreamUsi
 C:\Users\USER-PC\GitRepose\Projects\directory_content\obj\Debug\ConsoleStreamUsing.csproj.CoreCompileInputs.cache
 C:\Users\USER-PC\GitRepose\Projects\directory_content\obj\Debug\ConsoleStreamUsing.exe
 C:\Users\USER-PC\GitRepose\Projects\directory_content\obj\Debug\ConsoleStreamUsing.pdb
+C:\Users\ONIKSfly\GitWork\directory_content\bin\Debug\ConsoleStreamUsing.exe.config
+C:\Users\ONIKSfly\GitWork\directory_content\bin\Debug\ConsoleStreamUsing.exe
+C:\Users\ONIKSfly\GitWork\directory_content\bin\Debug\ConsoleStreamUsing.pdb
+C:\Users\ONIKSfly\GitWork\directory_content\obj\Debug\ConsoleStreamUsing.csprojAssemblyReference.cache
+C:\Users\ONIKSfly\GitWork\directory_content\obj\Debug\ConsoleStreamUsing.csproj.CoreCompileInputs.cache
+C:\Users\ONIKSfly\GitWork\directory_content\obj\Debug\ConsoleStreamUsing.exe
+C:\Users\ONIKSfly\GitWork\directory_content\obj\Debug\ConsoleStreamUsing.pdb
