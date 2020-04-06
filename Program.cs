@@ -1,78 +1,59 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ConsoleStreamUsing {
-
     class Program {
         static void Main (string[] args) {
-            int s = 0;
-            void Folder (string path) {
-                // Метод использует array DirectoryInfo и рекурсию.
-                s++;
-                DirectoryInfo DI = new DirectoryInfo (path);
-                DirectoryInfo[] SubDir = DI.GetDirectories ();
-                //Console.WriteLine($"Выбран каталог {path}.");
-                if (SubDir.Length > 0) {
-                    Console.WriteLine ($"Папки уровня {s}:");
-                    for (int i = 0; i < SubDir.Length; ++i) {
-                        Folder (SubDir[i].FullName);
-                        Console.WriteLine (SubDir[i].FullName);
+            void MyFolder (string path) {
+                // Метод List string и Arrey string. Есть рекурсия. Нет глубины сканирования.
+                List<string> ls = new List<string> ();
+                ls.Add ("Папка: " + path);
+                string[] startfiles = Directory.GetFiles (path);
+                foreach (string filename in startfiles) {
+                    ls.Add ("\tФайл: " + filename);
+                }
+                if (startfiles.Length > 0)
+                    ls.Add ("\tФайлов " + startfiles.Length);
+                try {
+                    string[] folders = Directory.GetDirectories (path, "*", SearchOption.AllDirectories);
+                    foreach (string foldername in folders) {
+                        ls.Add ("Папка: " + foldername);
+                        string[] files = Directory.GetFiles (foldername, "*", SearchOption.TopDirectoryOnly);
+                        foreach (string filename in files) {
+                            ls.Add ("\tФайл: " + filename);
+                        }
+                        if (files.Length > 0)
+                            ls.Add ("\tФайлов " + files.Length);
                     }
-                    Console.WriteLine ($"Найдено папок {SubDir.Length}");
-                    Console.WriteLine ($"\nФайлы уровня {s}:");
-                    FileInfo[] FI = DI.GetFiles ();
-                    for (int i = 0; i < FI.Length; ++i)
-                        Console.WriteLine ($"{FI[i].FullName}");
-                    Console.WriteLine ($"Найдено файлов {FI.Length}");
+                } catch (System.Exception e) {
+                    Console.WriteLine (e.Message);
+                }
+                foreach (string filename in ls) {
+                    Console.WriteLine (filename);
                 }
             }
             DriveInfo[] drives = DriveInfo.GetDrives ();
             Console.Title = "directory_content";
-            Console.WriteLine ("Перечень дисков:");
+            Console.WriteLine ("Проверьте информацию на дисках:");
             foreach (DriveInfo drive in drives) Console.WriteLine (drive.Name);
             try {
                 for (byte i = 0; i < 3; i++) {
                     string dirName = "";
                     byte dirNumber = 0;
-                    short level = 0;
                     byte dirLine = 0;
-                    Console.Write ("\nВыбирите диск из перечня:  ");
+                    Console.Write ("\nВыбирите диск для проверки:  ");
                     ConsoleKey consoleKey = Console.ReadKey ().Key;
-                    // Выбираем логический диск C-F.
-                    switch (consoleKey) {
-                        case ConsoleKey.C:
-                            dirName = $"C:\\";
-                            break;
-                        case ConsoleKey.D:
-                            dirName = $"D:\\";
-                            break;
-                        case ConsoleKey.E:
-                            dirName = $"E:\\";
-                            break;
-                        case ConsoleKey.F:
-                            dirName = $"F:\\";
-                            break;
-                        default:
-                            break;
-                    }
+                    // Выбираем логический диск.
+                    dirName = Convert.ToString (consoleKey) + ":\\";
                     if (Directory.Exists (dirName)) {
                         Console.WriteLine ($"\nВыбран диск   {dirName} ");
-                        int k = 0;
-                        while (level != 1 && level != 2 && level != 3) {
-                            Console.Write ("\nЗадайте глубину поиска (1,2 или 3): ");
-                            level = short.Parse (Console.ReadLine ());
-                            k++;
-                            if (k == 3) {
-                                level = 0;
-                                Console.WriteLine ($"\nЯсно. Исследуем только корневые элементы.");
-                                break;
-                            }
-                        }
-                        Console.WriteLine ("\tКорневые каталоги:");
+                        Console.WriteLine ("Корневые каталоги:");
                         string[] dirs = Directory.GetDirectories (dirName);
                         //Проиндексируем и выведем корневые каталоги.
                         while (dirNumber < dirs.Length) {
                             Console.WriteLine ($"{dirNumber}) {dirs[dirNumber]}");
+                            //Таймер задержки
                             System.Threading.Thread.Sleep (100);
                             dirNumber++;
                         }
@@ -82,7 +63,7 @@ namespace ConsoleStreamUsing {
                         if (files.Length > 0) {
                             Console.WriteLine ($"Корневые Файлы:");
                             foreach (string s0 in files) Console.WriteLine ($"{s0}");
-                            Console.WriteLine ($"Найдено файлов {files.Length}.");
+                            Console.WriteLine ($"Файлов {files.Length}.");
                         }
                         // Выбираем подкаталог.
                         Console.WriteLine ();
@@ -90,19 +71,40 @@ namespace ConsoleStreamUsing {
                             try {
                                 Console.Write ($"\nУкажите номер корневого каталога: ");
                                 dirLine = byte.Parse (Console.ReadLine ());
+                                Console.Write ($"\nСканируем каталог: ");
                             } catch (FormatException) {
-                                if (j == 2) break;
+                                Console.Write ("Или");
+                                for (int m = 0; m < 3; m++) {
+                                    Console.Write (" перетащите сюда путь к своей папке - ");
+                                    string checkFold = Console.ReadLine ();
+                                    if (Directory.Exists (checkFold)) {
+                                        Console.WriteLine ($"\nВы сканируете:");
+                                        MyFolder (checkFold);
+                                    } else
+                                        Console.WriteLine ("Путь указан неверно!");
+                                }
+                                break;
+                            } catch {
                                 Console.WriteLine ("Ошибка ввода. Еще раз.");
                             }
                             if (dirLine < dirNumber) {
-                                //Начало метода.
-                                Folder (dirs[dirLine]);
-                                Console.ReadKey ();
+                                // Начало метода.
+                                MyFolder (dirs[dirLine]);
                             } else {
                                 if (j == 2) {
                                     Console.ForegroundColor = ConsoleColor.Red;
                                     Console.WriteLine ("\nНе удается выбрать подкаталог. Зайдите в другой раз(");
                                     Console.ResetColor ();
+                                    Console.Write ("Или");
+                                    for (int m = 0; m < 3; m++) {
+                                        Console.Write (" перетащите сюда путь к своей папке - ");
+                                        string checkFold = Console.ReadLine ();
+                                        if (Directory.Exists (checkFold)) {
+                                            Console.WriteLine ($"\nВы сканируете:");
+                                            MyFolder (checkFold);
+                                        } else
+                                            Console.WriteLine ("Путь указан неверно!");
+                                    }
                                     break;
                                 }
                                 Console.WriteLine ("Такого подкаталога нет. Попробуйте еще!");
@@ -115,16 +117,29 @@ namespace ConsoleStreamUsing {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine ("\nНе удается выбрать диск. Попробуйте в другой раз(");
                             Console.ResetColor ();
+                            Console.Write ("Или");
+                            for (int m = 0; m < 3; m++) {
+                                Console.Write (" перетащите сюда путь к своей папке - ");
+                                string checkFold = Console.ReadLine ();
+                                if (Directory.Exists (checkFold)) {
+                                    Console.WriteLine ($"\nВы сканируете:");
+                                    MyFolder (checkFold);
+                                } else
+                                    Console.WriteLine ("Путь указан неверно!");
+                            }
                             break;
                         }
                         Console.WriteLine (" - такого диска нет. Попробуйте еще!");
                         continue;
                     }
-                    break;
                 }
+            } catch (UnauthorizedAccessException ex) {
+                Console.WriteLine (ex.Message);
+            } catch (PathTooLongException ex) {
+                Console.WriteLine (ex.Message);
             } catch {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine ("Выход.");
+                Console.WriteLine ("Выход. Неверный формат ввода.");
                 Console.ResetColor ();
             }
         }
