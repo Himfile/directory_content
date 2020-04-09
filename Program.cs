@@ -10,7 +10,7 @@ namespace ConsoleStreamUsing
         {
             void MyFolder(string path)
             {
-                // Метод List и Arrey. Есть рекурсия. Нет глубины сканирования.
+                // Метод List и Array. Есть рекурсия. Нет глубины сканирования.
                 List<string> ls = new List<string>();
                 ls.Add("Папка: " + path);
                 string[] startfiles = Directory.GetFiles(path);
