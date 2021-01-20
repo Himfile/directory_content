@@ -2,15 +2,17 @@
 *.suo
 *.user
 .vs/
-[Bb]in/
-[Oo]bj/
+.vs
+.*
+var/bin/
+var/obj/
 _UpgradeReport_Files/
 [Pp]ackages/
 
 Thumbs.db
 
-*.[Cc]ache
-!?*.[Cc]ache/
+*.cache
+!?*.cache/
 
 
 # Files built by Visual Studio
